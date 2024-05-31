@@ -1,17 +1,17 @@
 import express from 'express'
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 const jsonBodyMiddleware = express.json()
 app.use(jsonBodyMiddleware)
 
-const HTTP_STATUSES={
-    OK_200:200,
-    CREATED_201:201,
-    NO_CONTENT_204:204,
+const HTTP_STATUSES = {
+    OK_200: 200,
+    CREATED_201: 201,
+    NO_CONTENT_204: 204,
 
-    BAD_REQUEST_400:400,
-    NOT_FOUND_404:404,
+    BAD_REQUEST_400: 400,
+    NOT_FOUND_404: 404,
 }
 
 const db = {
@@ -84,8 +84,6 @@ app.delete('/users/:id', (req, res) => {
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     res.json(db.users)
 })
-
-
 
 
 app.listen(port, () => {
