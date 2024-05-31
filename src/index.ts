@@ -23,6 +23,11 @@ const db = {
     ]
 }
 
+app.get('/', (req, res) => {
+
+    res.send('Hi people')
+})
+
 // CRUD USERS
 app.get('/users', (req, res) => {
     if (!db.users.length) {
