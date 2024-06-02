@@ -102,6 +102,8 @@ app.delete('/__test__/data', (req: Request, res: Response) => {
     db.courses = []
     res.sendStatus(HTTP_STATUSES.NO_CONTENT)
 })
+
+
 //PUT
 app.put('/courses/:id', (req: RequestsWithParamsAndBody<URIParamsCourseModel, { title: string }>, res: Response) => {
     if (!req.body.title) {
