@@ -44,6 +44,16 @@ const getViewModel = (dbCourse: CourseType): CourseViewModel => {
     }
 }
 //GET
+app.get('/', (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
+    let foundCourses = db.courses
+    if (req.query.title) {
+        foundCourses = foundCourses.filter(c => c.title.indexOf(req.query.title) > -1)
+    }
+
+    res.json(foundCourses.map(getViewModel))
+
+})
+
 app.get('/courses', (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
     let foundCourses = db.courses
     if (req.query.title) {
@@ -92,6 +102,8 @@ app.delete('/__test__/data', (req: Request, res: Response) => {
     db.courses = []
     res.sendStatus(HTTP_STATUSES.NO_CONTENT)
 })
+
+
 //PUT
 app.put('/courses/:id', (req: RequestsWithParamsAndBody<URIParamsCourseModel, { title: string }>, res: Response) => {
     if (!req.body.title) {
