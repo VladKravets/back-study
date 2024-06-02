@@ -7,7 +7,7 @@ import {URIParamsCourseModel} from "./models/URIParamsCourseModel";
 
 
 export const app = express()
-const port = 3000
+const port = process.env.PORT || 3000
 
 const jsonBodyMiddleWare = express.json()
 app.use(jsonBodyMiddleWare)
@@ -37,10 +37,10 @@ const db: { courses: CourseType[] } = {
     ]
 }
 
-const getViewModel=(dbCourse:CourseType):CourseViewModel=>{
-    return{
-        id:dbCourse.id,
-        title:dbCourse.title
+const getViewModel = (dbCourse: CourseType): CourseViewModel => {
+    return {
+        id: dbCourse.id,
+        title: dbCourse.title
     }
 }
 //GET
