@@ -44,6 +44,16 @@ const getViewModel = (dbCourse: CourseType): CourseViewModel => {
     }
 }
 //GET
+app.get('/', (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
+    let foundCourses = db.courses
+    if (req.query.title) {
+        foundCourses = foundCourses.filter(c => c.title.indexOf(req.query.title) > -1)
+    }
+
+    res.json(foundCourses.map(getViewModel))
+
+})
+
 app.get('/courses', (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
     let foundCourses = db.courses
     if (req.query.title) {
