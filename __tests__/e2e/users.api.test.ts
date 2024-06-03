@@ -1,7 +1,9 @@
 import request from 'supertest'
-import {app, HTTP_STATUSES} from '../../src'
 
-describe('course', () => {
+import {app} from "../../src/app";
+import {HTTP_STATUSES} from "../../src/utils";
+
+describe('courses', () => {
     beforeAll(async () => {
         const response = await request(app).post('/courses').send({title: 'Test Course'});
         createdCourse = response.body;
