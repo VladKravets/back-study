@@ -1,7 +1,7 @@
 import express from "express";
 import {getCoursesRouter} from "./routes/courses";
 import {getTestsRouter} from "./routes/tests";
-import {db} from "./db/db";
+import {db} from "./repositories/courses-repository";
 
 export const app = express()
 export const jsonBodyMiddleWare = express.json()

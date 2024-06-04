@@ -4,12 +4,8 @@ import {CoursesQueryModel} from "../models/GetCoursesQueryModel";
 import {CourseViewModel} from "../models/CourseViewModel";
 import {URIParamsCourseModel} from "../models/URIParamsCourseModel";
 import {CourseCreateModel} from "../models/CourseCreateModel";
-import {CourseType, DBType} from "../db/db";
 import {HTTP_STATUSES} from "../utils";
-
-
-
-
+import {coursesRepository, CourseType, DBType} from "../repositories/courses-repository";
 
 export const getViewModel = (dbCourse: CourseType): CourseViewModel => {
     return {
@@ -25,17 +21,13 @@ export const getCoursesRouter = (db: DBType) => {
 //GET
 
     router.get('/', (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
-        let foundCourses = db.courses
-        if (req.query.title) {
-            foundCourses = foundCourses.filter(c => c.title.indexOf(req.query.title) > -1)
-        }
+        const foundCourses = coursesRepository.findCourses(req.query.title?.toString())
 
-        res.json(foundCourses.map(getViewModel))
+        res.json(foundCourses)
 
     })
     router.get('/:id', (req: RequestsWithParams<URIParamsCourseModel>, res: Response<CourseViewModel>) => {
-        const foundCourse = db.courses.find(course => course.id === +req.params.id)
-
+        const foundCourse = coursesRepository.getCourseById(+req.params.id)
         if (!foundCourse) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND)
             return
@@ -49,22 +41,13 @@ export const getCoursesRouter = (db: DBType) => {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST)
             return
         }
-
-        const newCourse = {
-            id: +(new Date()),
-            title: req.body.title,
-            studentsCount: 0
-        };
-        db.courses.push(newCourse)
-
-        console.log(newCourse)
+        const newCourse = coursesRepository.createCourses(req.body.title)
         res.status(HTTP_STATUSES.CREATED_201).json(getViewModel(newCourse))
     })
 
 //DELETE
     router.delete('/:id', (req: RequestsWithParams<URIParamsCourseModel>, res: Response) => {
-        db.courses = db.courses.filter(course => course.id !== +req.params.id)
-
+        coursesRepository.deleteCourseById(+req.params.id)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)
     })
 
@@ -76,15 +59,17 @@ export const getCoursesRouter = (db: DBType) => {
             return;
         }
 
-        const foundCourse = db.courses.find(course => course.id === +req.params.id)
-        if (!foundCourse) {
+        const course = coursesRepository.updateCourseById(+req.params.id, req.body.title)
+
+        if (!course) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND)
             return
         }
 
-        foundCourse.title = req.body.title
 
-        res.status(HTTP_STATUSES.NO_CONTENT).json(foundCourse)
+        res.status(HTTP_STATUSES.NO_CONTENT).json(course)
+
+
     })
 
     return router
