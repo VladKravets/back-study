@@ -6,6 +6,8 @@ import {URIParamsCourseModel} from "../models/URIParamsCourseModel";
 import {CourseCreateModel} from "../models/CourseCreateModel";
 import {HTTP_STATUSES} from "../utils";
 import {coursesRepository, CourseType, DBType} from "../repositories/courses-repository";
+import {body, validationResult} from "express-validator";
+import {inputValidationMiddleware} from "../../dist/src/middlewares/input-validation-middleware";
 
 export const getViewModel = (dbCourse: CourseType): CourseViewModel => {
     return {
@@ -13,6 +15,11 @@ export const getViewModel = (dbCourse: CourseType): CourseViewModel => {
         title: dbCourse.title
     }
 }
+
+const titleValidation = body('title').trim().isLength({
+    min: 1,
+    max: 40
+}).withMessage('Title length should be greater than 10')
 
 export const getCoursesRouter = (db: DBType) => {
     const router = express.Router();
@@ -36,24 +43,17 @@ export const getCoursesRouter = (db: DBType) => {
     })
 
 //POST
-    router.post('/', (req: RequestsWithBody<CourseCreateModel>, res: Response<CourseViewModel>) => {
-        if (!req.body.title) {
-            res.sendStatus(HTTP_STATUSES.BAD_REQUEST)
-            return
-        }
-        const newCourse = coursesRepository.createCourses(req.body.title)
-        res.status(HTTP_STATUSES.CREATED_201).json(getViewModel(newCourse))
-    })
+    router.post('/',
+        titleValidation, inputValidationMiddleware,
+        (req: RequestsWithBody<CourseCreateModel>, res: Response<CourseViewModel>) => {
+            const newCourse = coursesRepository.createCourses(req.body.title)
+            res.status(HTTP_STATUSES.CREATED_201).json(getViewModel(newCourse))
+        })
 
-//DELETE
-    router.delete('/:id', (req: RequestsWithParams<URIParamsCourseModel>, res: Response) => {
-        coursesRepository.deleteCourseById(+req.params.id)
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT)
-    })
-
-
-//PUT
-    router.put('/:id', (req: RequestsWithParamsAndBody<URIParamsCourseModel, { title: string }>, res: Response) => {
+    //PUT
+    router.put('/:id', titleValidation, inputValidationMiddleware, (req: RequestsWithParamsAndBody<URIParamsCourseModel, {
+        title: string
+    }>, res: Response) => {
         if (!req.body.title) {
             res.sendStatus(HTTP_STATUSES.BAD_REQUEST)
             return;
@@ -71,6 +71,14 @@ export const getCoursesRouter = (db: DBType) => {
 
 
     })
+
+
+//DELETE
+    router.delete('/:id', (req: RequestsWithParams<URIParamsCourseModel>, res: Response) => {
+        coursesRepository.deleteCourseById(+req.params.id)
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT)
+    })
+
 
     return router
 
