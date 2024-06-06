@@ -7,7 +7,7 @@ import {CourseCreateModel} from "../models/CourseCreateModel";
 import {HTTP_STATUSES} from "../utils";
 import {coursesRepository, CourseType, DBType} from "../repositories/courses-repository";
 import {body} from "express-validator";
-import {inputValidationMiddleware} from "../../dist/src/middlewares/input-validation-middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
 
 export const getViewModel = (dbCourse: CourseType): CourseViewModel => {
     return {
