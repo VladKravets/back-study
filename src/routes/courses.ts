@@ -6,7 +6,7 @@ import {URIParamsCourseModel} from "../models/URIParamsCourseModel";
 import {CourseCreateModel} from "../models/CourseCreateModel";
 import {HTTP_STATUSES} from "../utils";
 import {coursesRepository, CourseType, DBType} from "../repositories/courses-repository";
-import {body, validationResult} from "express-validator";
+import {body} from "express-validator";
 import {inputValidationMiddleware} from "../../dist/src/middlewares/input-validation-middleware";
 
 export const getViewModel = (dbCourse: CourseType): CourseViewModel => {
