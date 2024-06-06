@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "author": "Vlad Kravets",
+  "engines": {
+    "node": "16.15.1"
+  },
   "license": "MIT",
   "dependencies": {
     "@types/jest": "^29.5.12",
     "@types/supertest": "^6.0.2",
-    "body-parser": "^1.20.2",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.13",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "jest": "^29.7.0",
@@ -22,10 +26,9 @@
     "start": "node dist/index.js"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^20.12.13",
     "nodemon": "^3.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "body-parser": "^1.20.2"
   }
 }
