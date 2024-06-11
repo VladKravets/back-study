@@ -9,8 +9,7 @@ export type DBType = {
     courses: CourseType[]
 }
 
-const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0:27017/?maxPoolSize=20&w=majority";
-// const mongoUri ='mongodb+srv://vkravets:PAiNJ2g9tE4YBrAb@myclasterforapp.stjqkwi.mongodb.net/courses?maxPoolSize=20&w=majority'
+const mongoUri = process.env.MONGODB_URI || "mongodb://0.0.0.0:27017/?maxPoolSize=20&w=majority";
 
 export const client = new MongoClient(mongoUri);
 
