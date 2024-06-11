@@ -1,7 +1,7 @@
 import express, {NextFunction} from "express";
 import {getCoursesRouter} from "./routes/courses";
 import {getTestsRouter} from "./routes/tests";
-import {db} from "./repositories/courses-repository";
+import {db} from "./repositories/courses-in-memory_repository";
 
 export const app = express()
 export const jsonBodyMiddleWare = express.json()

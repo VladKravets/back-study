@@ -5,9 +5,10 @@ import {CourseViewModel} from "../models/CourseViewModel";
 import {URIParamsCourseModel} from "../models/URIParamsCourseModel";
 import {CourseCreateModel} from "../models/CourseCreateModel";
 import {HTTP_STATUSES} from "../utils";
-import {coursesRepository, CourseType, DBType} from "../repositories/courses-repository";
+import {coursesService} from "../domain/course-service";
 import {body} from "express-validator";
 import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
+import {CourseType, DBType} from "../repositories/db";
 
 export const getViewModel = (dbCourse: CourseType): CourseViewModel => {
     return {
@@ -27,14 +28,14 @@ export const getCoursesRouter = (db: DBType) => {
 
 //GET
 
-    router.get('/', (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
-        const foundCourses = coursesRepository.findCourses(req.query.title?.toString())
+    router.get('/', async (req: RequestsWithQuery<CoursesQueryModel>, res: Response<CourseViewModel[]>) => {
+        const foundCourses = await coursesService.findCourses(req.query.title?.toString())
 
         res.json(foundCourses)
 
     })
-    router.get('/:id', (req: RequestsWithParams<URIParamsCourseModel>, res: Response<CourseViewModel>) => {
-        const foundCourse = coursesRepository.getCourseById(+req.params.id)
+    router.get('/:id', async (req: RequestsWithParams<URIParamsCourseModel>, res: Response<CourseViewModel>) => {
+        const foundCourse = await coursesService.getCourseById(+req.params.id)
         if (!foundCourse) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND)
             return
@@ -45,13 +46,13 @@ export const getCoursesRouter = (db: DBType) => {
 //POST
     router.post('/',
         titleValidation, inputValidationMiddleware,
-        (req: RequestsWithBody<CourseCreateModel>, res: Response<CourseViewModel>) => {
-            const newCourse = coursesRepository.createCourses(req.body.title)
+        async (req: RequestsWithBody<CourseCreateModel>, res: Response<CourseViewModel>) => {
+            const newCourse = await coursesService.createCourses(req.body.title)
             res.status(HTTP_STATUSES.CREATED_201).json(getViewModel(newCourse))
         })
 
     //PUT
-    router.put('/:id', titleValidation, inputValidationMiddleware, (req: RequestsWithParamsAndBody<URIParamsCourseModel, {
+    router.put('/:id', titleValidation, inputValidationMiddleware, async (req: RequestsWithParamsAndBody<URIParamsCourseModel, {
         title: string
     }>, res: Response) => {
         if (!req.body.title) {
@@ -59,7 +60,7 @@ export const getCoursesRouter = (db: DBType) => {
             return;
         }
 
-        const course = coursesRepository.updateCourseById(+req.params.id, req.body.title)
+        const course = await coursesService.updateCourseById(+req.params.id, req.body.title)
 
         if (!course) {
             res.sendStatus(HTTP_STATUSES.NOT_FOUND)
@@ -74,8 +75,8 @@ export const getCoursesRouter = (db: DBType) => {
 
 
 //DELETE
-    router.delete('/:id', (req: RequestsWithParams<URIParamsCourseModel>, res: Response) => {
-        coursesRepository.deleteCourseById(+req.params.id)
+    router.delete('/:id', async (req: RequestsWithParams<URIParamsCourseModel>, res: Response) => {
+        await coursesService.deleteCourseById(+req.params.id)
         res.sendStatus(HTTP_STATUSES.NO_CONTENT)
     })
 

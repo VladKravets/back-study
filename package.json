@@ -3,32 +3,30 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "author": "Vlad Kravets",
-  "engines": {
-    "node": "16.15.1"
-  },
   "license": "MIT",
   "dependencies": {
-    "@types/jest": "^29.5.12",
-    "@types/supertest": "^6.0.2",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.12.13",
+    "@types/supertest": "^6.0.2",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "jest": "^29.7.0",
+    "mongoose": "^8.4.1",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.4"
   },
   "scripts": {
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.js ",
+    "dev": "nodemon dist/src/index.js ",
     "test": "jest",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/src/index.js"
   },
   "devDependencies": {
+    "body-parser": "^1.20.2",
     "nodemon": "^3.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "body-parser": "^1.20.2"
+    "typescript": "^5.4.5"
   }
 }
